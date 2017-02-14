@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="true"
+	xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+	<appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%5p %d{yyyy-MM-dd HH:mm:ss} 【%m】 %c(%L)%n" />
+		</layout>
+	</appender>
+
+	<appender name="errorAppender"
+		class="cn.hylexus.jt808.common.MyClassificationLogAppender">
+		<param name="File" value="${catalina.home}/logs/tpms-udp/error.log" />
+		<param name="append" value="true" />
+		<param name="DatePattern" value="'-'yyyy-MM-dd'.log'" />
+		<param name="Threshold" value="error" />
+		<param name="encoding" value="utf-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %5p - %m %c(%L)%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="ERROR" />
+			<param name="LevelMax" value="ERROR" />
+		</filter>
+	</appender>
+	<appender name="infoAppender"
+		class="cn.hylexus.jt808.common.MyClassificationLogAppender">
+		<param name="File" value="${catalina.home}/logs/tpms-udp/info.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value="'-'yyyy-MM-dd'.log'" />
+		<param name="Threshold" value="info" />
+		<param name="encoding" value="utf-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %5p - %m %c(%L)%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="INFO" />
+			<param name="LevelMax" value="INFO" />
+		</filter>
+	</appender>
+	<appender name="warnAppender"
+		class="cn.hylexus.jt808.common.MyClassificationLogAppender">
+		<param name="File" value="${catalina.home}/logs/tpms-udp/warn.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value="'-'yyyy-MM-dd'.log'" />
+		<param name="Threshold" value="warn" />
+		<param name="encoding" value="utf-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %5p - %m %c(%L)%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="warn" />
+			<param name="LevelMax" value="warn" />
+		</filter>
+	</appender>
+	<appender name="debugAppender"
+		class="cn.hylexus.jt808.common.MyClassificationLogAppender">
+		<param name="File" value="${catalina.home}/logs/tpms-udp/debug.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<param name="Threshold" value="debug" />
+		<param name="encoding" value="utf-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %5p - %m %c(%L)%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="debug" />
+			<param name="LevelMax" value="debug" />
+		</filter>
+	</appender>
+
+	<appender name="sqlAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${catalina.home}/logs/tpms-udp/sql.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<param name="Threshold" value="info" />
+		<param name="Append" value="true" />
+		<param name="Encoding" value="utf-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] jdbc.sqlonly - %n%m%n%n" />
+		</layout>
+	</appender>
+
+	<appender name="webLogAppender"
+		class="cn.hylexus.jt808.common.MyClassificationLogAppender">
+		<param name="File" value="D:/tomcat/logs/tpms-udp/info.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+		<param name="Threshold" value="info" />
+		<param name="Append" value="true" />
+		<param name="Encoding" value="utf-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %m%n" />
+		</layout>
+	</appender>
+
+
+	<!-- logger的作用： 1.[name属性]:指定你定义Logger对象时候的name 2. additivity : children-logger是否使用 
+		rootLogger的配置, additivity在log4j默认为true。这解释了为什么有些时候，一个日志信息在屏幕上会有多次输出。 3.还可以指定level(输出级别)、appender-ref(指定哪个append) -->
+	<!-- loggers -->
+	<logger name="jdbc.sqlonly" additivity="false">
+		<appender-ref ref="sqlAppender" />
+		<appender-ref ref="consoleAppender" />
+	</logger>
+	<logger name="jdbc.sqltiming">
+		<level value="off" />
+	</logger>
+	<logger name="jdbc.audit">
+		<level value="off" />
+	</logger>
+	<logger name="jdbc.resultsettable">
+		<level value="off" />
+	</logger>
+	<logger name="jdbc.audit">
+		<level value="off" />
+	</logger>
+	<logger name="jdbc.resultset">
+		<level value="off" />
+	</logger>
+	<logger name="jdbc.connection">
+		<level value="off" />
+	</logger>
+
+	<logger name="weblog">
+		<level value="error" />
+		<appender-ref ref="webLogAppender" />
+		<!-- <appender-ref ref="consoleAppender" /> -->
+	</logger>
+	<logger name="cn.kkbc.tpms">
+		<level value="debug"></level>
+	</logger>
+	<logger name="io.netty">
+		<level value="warn"></level>
+	</logger>
+	<!-- <logger name="io.netty"> <level value="info"></level> </logger> -->
+	<!-- <logger name="org.apache.ibatis"> <level value="warn"></level> </logger> -->
+	<!-- <logger name="log4jdbc"> <level value="warn"></level> </logger> -->
+	<!-- <logger name="cn.kkbc.tpms.tcp.dao"> <level value="warn"></level> </logger> -->
+
+	<!-- 所有logger的父logger -->
+	<!-- priority :指定默认的全局输出级别 appender-ref :指定一些默认的append（没有指出特殊包或者类，即那些没有指定<logger>元素的append）的输出； -->
+	<root>
+		<priority value="debug" />
+		<!-- 将 logger 中 additivity=true 的日志或者没有指定<logger>的append输出到控制台 -->
+		<appender-ref ref="consoleAppender" />
+		<!-- 将全局的 error 日志输出到error文件中 -->
+		<appender-ref ref="errorAppender" />
+		<appender-ref ref="warnAppender" />
+		<appender-ref ref="infoAppender" />
+		<appender-ref ref="debugAppender" />
+	</root>
+
+</log4j:configuration>
