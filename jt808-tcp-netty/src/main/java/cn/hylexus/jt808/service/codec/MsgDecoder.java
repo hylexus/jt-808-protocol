@@ -71,9 +71,9 @@ public class MsgDecoder {
 		int msgBodyProps = this.parseIntFromBytes(data, 2, 2);
 		msgHeader.setMsgBodyPropsField(msgBodyProps);
 		// [ 0-9 ] 0000,0011,1111,1111(3FF)(消息体长度)
-		msgHeader.setMsgBodyLength(msgBodyProps & 0x1ff);
+		msgHeader.setMsgBodyLength(msgBodyProps & 0x3ff);
 		// [10-12] 0001,1100,0000,0000(1C00)(加密类型)
-		msgHeader.setEncryptionType((msgBodyProps & 0xe00) >> 10);
+		msgHeader.setEncryptionType((msgBodyProps & 0x1c00) >> 10);
 		// [ 13_ ] 0010,0000,0000,0000(2000)(是否有子包)
 		msgHeader.setHasSubPackage(((msgBodyProps & 0x2000) >> 13) == 1);
 		// [14-15] 1100,0000,0000,0000(C000)(保留位)
