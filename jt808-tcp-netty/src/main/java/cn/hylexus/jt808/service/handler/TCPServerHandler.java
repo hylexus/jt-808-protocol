@@ -1,5 +1,6 @@
 package cn.hylexus.jt808.service.handler;
 
+import cn.hylexus.jt808.vo.req.LocationInfoUploadMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,6 +113,20 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
 				logger.info("<<<<<[终端注销],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
 			} catch (Exception e) {
 				logger.error("<<<<<[终端注销]处理错误,phone={},flowid={},err={}", header.getTerminalPhone(), header.getFlowId(),
+						e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		// 3. 位置信息汇报 ==> 平台通用应答
+		else if (TPMSConsts.msg_id_terminal_location_info_upload == header.getMsgId()) {
+			logger.info(">>>>>[位置信息],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
+			try {
+				LocationInfoUploadMsg locationInfoUploadMsg = this.decoder.toLocationInfoUploadMsg(packageData);
+				System.out.println(locationInfoUploadMsg);
+				this.msgProcessService.processLocationInfoUploadMsg(locationInfoUploadMsg);
+				logger.info("<<<<<[位置信息],phone={},flowid={}", header.getTerminalPhone(), header.getFlowId());
+			} catch (Exception e) {
+				logger.error("<<<<<[位置信息]处理错误,phone={},flowid={},err={}", header.getTerminalPhone(), header.getFlowId(),
 						e.getMessage());
 				e.printStackTrace();
 			}

@@ -1,5 +1,6 @@
 package cn.hylexus.jt808.service.codec;
 
+import cn.hylexus.jt808.vo.req.LocationInfoUploadMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,5 +196,52 @@ public class MsgDecoder {
 
 		ret.setTerminalRegInfo(body);
 		return ret;
+	}
+
+
+	public LocationInfoUploadMsg toLocationInfoUploadMsg(PackageData packageData) {
+		LocationInfoUploadMsg ret = new LocationInfoUploadMsg(packageData);
+		final byte[] data = ret.getMsgBodyBytes();
+
+		// 1. byte[0-3] 报警标志(DWORD(32))
+		ret.setWarningFlagField(this.parseIntFromBytes(data, 0, 3));
+		// 2. byte[4-7] 状态(DWORD(32))
+		ret.setStatusField(this.parseIntFromBytes(data, 4, 4));
+		// 3. byte[8-11] 纬度(DWORD(32)) 以度为单位的纬度值乘以10^6，精确到百万分之一度
+		ret.setLatitude(this.parseFloatFromBytes(data, 8, 4));
+		// 4. byte[12-15] 经度(DWORD(32)) 以度为单位的经度值乘以10^6，精确到百万分之一度
+		ret.setLongitude(this.parseFloatFromBytes(data, 12, 4));
+		// 5. byte[16-17] 高程(WORD(16)) 海拔高度，单位为米（ m）
+		ret.setElevation(this.parseIntFromBytes(data, 16, 2));
+		// byte[18-19] 速度(WORD) 1/10km/h
+		ret.setSpeed(this.parseFloatFromBytes(data, 18, 2));
+		// byte[20-21] 方向(WORD) 0-359，正北为 0，顺时针
+		ret.setDirection(this.parseIntFromBytes(data, 20, 2));
+		// byte[22-x] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
+		// GMT+8 时间，本标准中之后涉及的时间均采用此时区
+		// ret.setTime(this.par);
+
+		byte[] tmp = new byte[6];
+		System.arraycopy(data, 22, tmp, 0, 6);
+		String time = this.parseBcdStringFromBytes(data, 22, 6);
+		return ret;
+	}
+
+	private float parseFloatFromBytes(byte[] data, int startIndex, int length) {
+		return this.parseFloatFromBytes(data, startIndex, length, 0f);
+	}
+
+	private float parseFloatFromBytes(byte[] data, int startIndex, int length, float defaultVal) {
+		try {
+			// 字节数大于4,从起始索引开始向后处理4个字节,其余超出部分丢弃
+			final int len = length > 4 ? 4 : length;
+			byte[] tmp = new byte[len];
+			System.arraycopy(data, startIndex, tmp, 0, len);
+			return bitOperator.byte2Float(tmp);
+		} catch (Exception e) {
+			log.error("解析浮点数出错:{}", e.getMessage());
+			e.printStackTrace();
+			return defaultVal;
+		}
 	}
 }
