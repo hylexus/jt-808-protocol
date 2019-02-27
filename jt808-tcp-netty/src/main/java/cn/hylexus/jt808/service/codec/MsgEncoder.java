@@ -45,7 +45,7 @@ public class MsgEncoder {
 		byte[] headerAndBody = this.bitOperator.concatAll(msgHeader, msgBody);
 
 		// 校验码
-		int checkSum = this.bitOperator.getCheckSum4JT808(headerAndBody, 0, headerAndBody.length - 1);
+		int checkSum = this.bitOperator.getCheckSum4JT808(headerAndBody, 0, headerAndBody.length);
 		// 连接并且转义
 		return this.doEncode(headerAndBody, checkSum);
 	}
@@ -66,7 +66,7 @@ public class MsgEncoder {
 				TPMSConsts.cmd_common_resp, msgBody, msgBodyProps, flowId);
 		byte[] headerAndBody = this.bitOperator.concatAll(msgHeader, msgBody);
 		// 校验码
-		int checkSum = this.bitOperator.getCheckSum4JT808(headerAndBody, 0, headerAndBody.length - 1);
+		int checkSum = this.bitOperator.getCheckSum4JT808(headerAndBody, 0, headerAndBody.length);
 		// 连接并且转义
 		return this.doEncode(headerAndBody, checkSum);
 	}
@@ -79,7 +79,7 @@ public class MsgEncoder {
 		// 连接消息头和消息体
 		byte[] headerAndBody = this.bitOperator.concatAll(msgHeader, msgBodyBytes);
 		// 校验码
-		int checkSum = this.bitOperator.getCheckSum4JT808(headerAndBody, 0, headerAndBody.length - 1);
+		int checkSum = this.bitOperator.getCheckSum4JT808(headerAndBody, 0, headerAndBody.length);
 		// 连接并且转义
 		return this.doEncode(headerAndBody, checkSum);
 	}
