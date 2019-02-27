@@ -108,7 +108,7 @@ public class MsgDecoder {
 			// tmp = new byte[2];
 			// System.arraycopy(data, 14, tmp, 0, 2);
 			// msgHeader.setSubPackageSeq(this.bitOperator.twoBytesToInteger(tmp));
-			msgHeader.setSubPackageSeq(this.parseIntFromBytes(data, 12, 2));
+			msgHeader.setSubPackageSeq(this.parseIntFromBytes(data, 14, 2));
 		}
 		return msgHeader;
 	}
