@@ -208,13 +208,16 @@ public class MsgDecoder {
 		// 2. byte[4-7] 状态(DWORD(32))
 		ret.setStatusField(this.parseIntFromBytes(data, 4, 4));
 		// 3. byte[8-11] 纬度(DWORD(32)) 以度为单位的纬度值乘以10^6，精确到百万分之一度
-		ret.setLatitude(this.parseFloatFromBytes(data, 8, 4));
+		// https://github.com/hylexus/jt-808-protocol/issues/8
+//		ret.setLatitude(this.parseFloatFromBytes(data, 8, 4));
+		ret.setLatitude(this.parseIntFromBytes(data, 8, 4)*1.0F/100_0000);
 		// 4. byte[12-15] 经度(DWORD(32)) 以度为单位的经度值乘以10^6，精确到百万分之一度
-		ret.setLongitude(this.parseFloatFromBytes(data, 12, 4));
+//		ret.setLongitude(this.parseFloatFromBytes(data, 12, 4));
+		ret.setLongitude(this.parseIntFromBytes(data, 12, 4)*1.0F/100_0000);
 		// 5. byte[16-17] 高程(WORD(16)) 海拔高度，单位为米（ m）
 		ret.setElevation(this.parseIntFromBytes(data, 16, 2));
 		// byte[18-19] 速度(WORD) 1/10km/h
-		ret.setSpeed(this.parseFloatFromBytes(data, 18, 2));
+		ret.setSpeed(this.parseIntFromBytes(data, 18, 2));
 		// byte[20-21] 方向(WORD) 0-359，正北为 0，顺时针
 		ret.setDirection(this.parseIntFromBytes(data, 20, 2));
 		// byte[22-x] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
