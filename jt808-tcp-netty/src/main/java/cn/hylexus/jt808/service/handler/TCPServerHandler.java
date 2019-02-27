@@ -1,5 +1,6 @@
 package cn.hylexus.jt808.service.handler;
 
+import cn.hylexus.jt808.util.JT808ProtocolUtils;
 import cn.hylexus.jt808.vo.req.LocationInfoUploadMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
 	private final SessionManager sessionManager;
 	private final MsgDecoder decoder;
 	private TerminalMsgProcessService msgProcessService;
+	private JT808ProtocolUtils protocolUtils = new JT808ProtocolUtils();
 
 	public TCPServerHandler() {
 		this.sessionManager = SessionManager.getInstance();
@@ -46,11 +48,14 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter { // (1)
 			byte[] bs = new byte[buf.readableBytes()];
 			buf.readBytes(bs);
 
+			bs = this.protocolUtils.doEscape4Receive(bs, 0, bs.length);
 			// 字节数据转换为针对于808消息结构的实体类
 			PackageData pkg = this.decoder.bytes2PackageData(bs);
 			// 引用channel,以便回送数据给硬件
 			pkg.setChannel(ctx.channel());
 			this.processPackageData(pkg);
+		} catch (Exception e) {
+			logger.error("",e);
 		} finally {
 			release(msg);
 		}
