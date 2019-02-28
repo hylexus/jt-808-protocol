@@ -12,6 +12,10 @@ import cn.hylexus.jt808.vo.PackageData.MsgHeader;
 import cn.hylexus.jt808.vo.req.TerminalRegisterMsg;
 import cn.hylexus.jt808.vo.req.TerminalRegisterMsg.TerminalRegInfo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class MsgDecoder {
 
 	private static final Logger log = LoggerFactory.getLogger(MsgDecoder.class);
@@ -222,11 +226,14 @@ public class MsgDecoder {
 		ret.setDirection(this.parseIntFromBytes(data, 20, 2));
 		// byte[22-x] 时间(BCD[6]) YY-MM-DD-hh-mm-ss
 		// GMT+8 时间，本标准中之后涉及的时间均采用此时区
-		// ret.setTime(this.par);
-
-		byte[] tmp = new byte[6];
-		System.arraycopy(data, 22, tmp, 0, 6);
-		String time = this.parseBcdStringFromBytes(data, 22, 6);
+		String dateStr = this.parseBcdStringFromBytes(data, 22, 6);
+		Date date = null;
+		try {
+			date = new SimpleDateFormat("yyMMddHHmmss").parse(dateStr);
+		} catch (ParseException e) {
+			log.error("",e);
+		}
+		ret.setTime(date);
 		return ret;
 	}
 
